@@ -505,8 +505,12 @@ async def get_products(category: Optional[str] = None, search: Optional[str] = N
             {"description": {"$regex": search, "$options": "i"}}
         ]
     
-    products = await db.products.find(query, {"_id": 0}).sort("created_at", -1).to_list(100)
-    return [Product(**p) for p in products]
+    try:
+        products = await db.products.find(query).sort("created_at", -1).limit(100).to_list(100)
+        return [Product(**{k: v for k, v in p.items() if k != '_id'}) for p in products]
+    except Exception as e:
+        print(f"Error fetching products: {e}")
+        return []
 
 @api_router.get("/products/{product_id}", response_model=Product)
 async def get_product(product_id: str):
