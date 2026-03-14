@@ -42,7 +42,7 @@ JWT_ALGORITHM = os.environ.get('JWT_ALGORITHM', 'HS256')
 stripe_api_key = os.environ.get('STRIPE_API_KEY')
 
 # Upload directory
-UPLOAD_DIR = Path(os.environ.get('UPLOAD_DIR', '/root/backend/uploads'))
+UPLOAD_DIR = Path(os.environ.get('UPLOAD_DIR', '/var/www/nesba/backend/uploads'))
 UPLOAD_DIR.mkdir(exist_ok=True)
 
 app = FastAPI()
