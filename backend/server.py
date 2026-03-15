@@ -28,8 +28,12 @@ from paytabs_service import create_payment_page as create_paytabs_payment, verif
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-# MongoDB connection
+import asyncio
 import ssl
+import os
+os.environ.setdefault('EVENT_LOOP_POLICY', 'uvloop')
+
+# MongoDB connection
 mongo_url = os.environ['MONGO_URL']
 try:
     client = AsyncIOMotorClient(
