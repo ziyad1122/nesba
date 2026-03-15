@@ -507,9 +507,13 @@ async def get_products(category: Optional[str] = None, search: Optional[str] = N
     
     try:
         products = await db.products.find(query).sort("created_at", -1).limit(100).to_list(100)
-        return [Product(**{k: v for k, v in p.items() if k != '_id'}) for p in products]
+        result = []
+        for p in products:
+            p.pop('_id', None)
+            result.append(p)
+        return result
     except Exception as e:
-        print(f"Error fetching products: {e}")
+        print(f"Error: {e}")
         return []
 
 @api_router.get("/products/{product_id}", response_model=Product)
