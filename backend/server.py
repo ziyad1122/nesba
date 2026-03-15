@@ -31,14 +31,18 @@ load_dotenv(ROOT_DIR / '.env')
 # MongoDB connection
 import ssl
 mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(
-    mongo_url, 
-    tls=True, 
-    tlsAllowInvalidCertificates=True,
-    tls=True,
-    ssl_cert_reqs=ssl.CERT_NONE
-)
-db = client[os.environ['DB_NAME']]
+try:
+    client = AsyncIOMotorClient(
+        mongo_url,
+        serverSelectionTimeoutMS=5000,
+        connectTimeoutMS=5000
+    )
+    client.admin.command('ping')
+    print("MongoDB connected successfully")
+except Exception as e:
+    print(f"MongoDB connection error: {e}")
+    client = None
+db = client[os.environ['DB_NAME']] if client else None
 
 # JWT & Password
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
